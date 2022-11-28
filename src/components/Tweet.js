@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Card,
@@ -13,60 +13,59 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
+import smartContract from "services/smartContract";
+import { web3 } from "services/smartContract";
 
-function createdTimeToFormatted(time) {
-  let now = new Date();
-  let createdTime = new Date(time);
+const moment = require("moment");
 
-  let year = createdTime.getFullYear().toString();
-  let month = (createdTime.getMonth() + 1).toString().padStart(2, "0");
-  let date = createdTime.getDate().toString().padStart(2, "0");
-
-  let toNow = now.getTime();
-  let toCreated = createdTime.getTime();
-  let passedTime = toNow - toCreated;
-  let passedMin = Math.round(passedTime / (1000 * 60));
-  let passedHour = Math.round(passedTime / (1000 * 60 * 60));
-  let passedDay = Math.round(passedTime / (1000 * 60 * 60 * 24));
-
-  if (passedDay > 0) {
-    return `${year}.${month}.${date}`;
-  } else if (passedHour === 1) {
-    return `a hour ago`;
-  } else if (passedHour > 0) {
-    return `${passedHour} hours ago`;
-  } else if (passedMin === 1) {
-    return `a minute ago`;
-  } else if (passedMin > 0) {
-    return `${passedMin} minutes ago`;
-  } else {
-    return "now";
-  }
-}
-
-const Tweet = ({ tweetObj, isOwner }) => {
+const Tweet = ({ author, content, timestamp, id, account }) => {
   const [editing, setEditing] = useState(false);
-  const [newTweet, setNewTweet] = useState(tweetObj.content);
+  const [newTweet, setNewTweet] = useState(content);
+
+  const handleDelete = async () => {
+    try {
+      const userAccount = await web3.eth.getAccounts();
+      smartContract.methods.deleteTweet(id).send({ from: userAccount[0] });
+    } catch (error) {
+      window.alert("Something went wrong. Please try again.");
+    }
+  };
+
   const onDeleteClick = () => {
     const ok = window.confirm("Are you sure you want to delete this tweet?");
     if (ok) {
       //delete
-      console.log("delete", tweetObj.id);
+      handleDelete();
+      console.log("delete", id);
     }
   };
+
   const toggleEditing = () => {
     setEditing((prev) => !prev);
   };
+
   const onChange = (event) => {
     setNewTweet(event.target.value);
   };
+
+  const handleSubmit = async () => {
+    const userAccount = await web3.eth.getAccounts();
+    smartContract.methods
+      .updateTweet(id, newTweet)
+      .send({ from: userAccount[0] })
+      .then(() => {
+        setEditing(false);
+      });
+  };
+
   const onSubmit = (event) => {
     event.preventDefault();
-    // update
-    console.log(tweetObj, newTweet);
+    handleSubmit(newTweet);
+    console.log(newTweet);
     setEditing(false);
-    setNewTweet(tweetObj.content);
+    setNewTweet(content);
   };
+
   return (
     <Box sx={{ minWidth: 275 }}>
       <Card variant="outlined">
@@ -86,7 +85,7 @@ const Tweet = ({ tweetObj, isOwner }) => {
               }}
             >
               <Typography variant="h6" component="div">
-                {tweetObj.creator}
+                {author}
               </Typography>
               <Box
                 component="span"
@@ -105,7 +104,7 @@ const Tweet = ({ tweetObj, isOwner }) => {
                 color="text.secondary"
                 sx={{ alignSelf: "center" }}
               >
-                {createdTimeToFormatted(tweetObj.createdAt)}
+                {moment.unix(timestamp).fromNow()}
               </Typography>
             </Box>
           </Box>
@@ -154,15 +153,16 @@ const Tweet = ({ tweetObj, isOwner }) => {
               }}
             >
               <Typography variant="body2" component="div" width="100%">
-                {tweetObj.content}
+                {content}
               </Typography>
-              {isOwner && (
+              {account === author && (
                 <>
                   <CardActions>
                     <IconButton
                       aria-label="edit"
                       size="small"
                       onClick={toggleEditing}
+                      disabled={editing}
                     >
                       <EditIcon fontSize="inherit" />
                     </IconButton>

@@ -1,26 +1,17 @@
-// import { TextField } from "@material-ui/core";
 import { Container, TextField, Button, FormControl } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import smartContract from "services/smartContract";
 
-const NewTweetFactory = ({ userObj, tweets, setTweets }) => {
+const NewTweetFactory = ({ account }) => {
   const [newTweet, setNewTweet] = useState("");
+
+  const handleSubmit = async (tweet) => {
+    smartContract.methods.addTweet(tweet).send({ from: account[0] });
+  };
 
   const onSubmit = async (event) => {
     event.preventDefault();
-    // await dbService.collection("nweets").add({
-    //   newTweet,
-    //   createdAt: Date.now(),
-    // });
-    setTweets([
-      {
-        content: newTweet,
-        creator: userObj.id,
-        createdAt: Date.now(),
-        id: tweets.length + 1,
-      },
-      ...tweets,
-    ]);
-    console.log("submit");
+    handleSubmit(newTweet);
     setNewTweet("");
   };
 
@@ -44,6 +35,7 @@ const NewTweetFactory = ({ userObj, tweets, setTweets }) => {
           size="medium"
           sx={{ width: "10%", marginTop: 1 }}
           onClick={onSubmit}
+          disabled={account[0] === null}
         >
           TWEET
         </Button>

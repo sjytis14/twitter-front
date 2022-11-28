@@ -7,9 +7,52 @@ import {
   Typography,
 } from "@mui/material";
 import TwitterIcon from "@mui/icons-material/Twitter";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const Navigation = () => {
+  const [currentAccount, setCurrentAccount] = useState(null);
+
+  useEffect(() => {
+    if (window.ethereum) {
+      window.ethereum
+        .request({ method: "eth_accounts" })
+        .then(handleAccountsChanged)
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+  }, [currentAccount]);
+
+  console.log(currentAccount);
+
+  const handleAccountsChanged = (accounts) => {
+    if (accounts.length === 0) {
+      window.alert("Please connect to Metamask");
+      setCurrentAccount(null);
+    } else if (accounts[0] !== currentAccount) {
+      setCurrentAccount(accounts[0]);
+    }
+  };
+
+  const enableMetamask = async () => {
+    if (window.ethereum) {
+      window.ethereum
+        .request({ method: "eth_requestAccounts" })
+        .then((response) => {
+          handleAccountsChanged(response);
+          console.log(response);
+        })
+        .catch((err) => {
+          if (err.code === 40001) {
+            window.alert("Please connect to Metamask");
+          } else {
+            window.alert(err);
+          }
+        });
+    } else {
+      window.alert("Your browser does not seem compatible with Ethereum.");
+    }
+  };
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -25,6 +68,8 @@ const Navigation = () => {
           </IconButton>
           <Button
             size="large"
+            onClick={enableMetamask}
+            disabled={currentAccount !== null}
             sx={{
               pl: 1,
               pr: 1,
