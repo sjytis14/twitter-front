@@ -1,9 +1,9 @@
+import React, { useState } from "react";
 import Home from "components/Home";
 import Navigation from "components/Navigation";
-import { useState } from "react";
 
 function App() {
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
   return (
     <>
       <Navigation setError={setError} />

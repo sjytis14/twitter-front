@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Card,
@@ -36,10 +36,6 @@ const Tweet = ({ author, content, timestamp, id, account }) => {
       handleDelete();
       console.log("delete", id);
     }
-  };
-
-  const toggleEditing = () => {
-    setEditing((prev) => !prev);
   };
 
   const onChange = (event) => {
@@ -128,7 +124,9 @@ const Tweet = ({ author, content, timestamp, id, account }) => {
                   <IconButton
                     aria-label="cancel"
                     size="small"
-                    onClick={toggleEditing}
+                    onClick={() => (
+                      setEditing((prev) => !prev), setNewTweet(content)
+                    )}
                   >
                     <CloseIcon fontSize="inherit" />
                   </IconButton>
@@ -159,7 +157,9 @@ const Tweet = ({ author, content, timestamp, id, account }) => {
                     <IconButton
                       aria-label="edit"
                       size="small"
-                      onClick={toggleEditing}
+                      onClick={() => (
+                        setEditing((prev) => !prev), setNewTweet(newTweet)
+                      )}
                       disabled={editing}
                     >
                       <EditIcon fontSize="inherit" />
