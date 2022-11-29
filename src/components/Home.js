@@ -1,10 +1,10 @@
-import { Container } from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import NewTweetFactory from "components/NewTweetFactory";
 import Content from "components/Content";
 import { web3 } from "services/smartContract";
 
-const Home = () => {
+const Home = ({ error }) => {
   const [account, setAccount] = useState("");
 
   useEffect(() => {
@@ -29,6 +29,18 @@ const Home = () => {
       }}
       fixed
     >
+      <Box sx={{ textAlign: "center" }}>
+        {error && (
+          <Typography
+            variant="h6"
+            component="div"
+            gutterBottom
+            sx={{ color: "red" }}
+          >
+            {error}
+          </Typography>
+        )}
+      </Box>
       <NewTweetFactory account={account} />
       <Content account={account} />
     </Container>

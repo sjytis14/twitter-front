@@ -24,8 +24,7 @@ const Tweet = ({ author, content, timestamp, id, account }) => {
 
   const handleDelete = async () => {
     try {
-      const userAccount = await web3.eth.getAccounts();
-      smartContract.methods.deleteTweet(id).send({ from: userAccount[0] });
+      smartContract.methods.deleteTweet(id).send({ from: account });
     } catch (error) {
       window.alert("Something went wrong. Please try again.");
     }
@@ -34,7 +33,6 @@ const Tweet = ({ author, content, timestamp, id, account }) => {
   const onDeleteClick = () => {
     const ok = window.confirm("Are you sure you want to delete this tweet?");
     if (ok) {
-      //delete
       handleDelete();
       console.log("delete", id);
     }
@@ -61,7 +59,7 @@ const Tweet = ({ author, content, timestamp, id, account }) => {
   const onSubmit = (event) => {
     event.preventDefault();
     handleSubmit(newTweet);
-    console.log(newTweet);
+
     setEditing(false);
     setNewTweet(content);
   };

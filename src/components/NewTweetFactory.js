@@ -7,12 +7,12 @@ const NewTweetFactory = ({ account }) => {
 
   const handleSubmit = async (tweet) => {
     smartContract.methods.addTweet(tweet).send({ from: account[0] });
+    setNewTweet("");
   };
 
   const onSubmit = async (event) => {
     event.preventDefault();
     handleSubmit(newTweet);
-    setNewTweet("");
   };
 
   const onChange = (event) => {
@@ -35,7 +35,7 @@ const NewTweetFactory = ({ account }) => {
           size="medium"
           sx={{ width: "10%", marginTop: 1 }}
           onClick={onSubmit}
-          disabled={account[0] === null}
+          disabled={account[0] === undefined}
         >
           TWEET
         </Button>

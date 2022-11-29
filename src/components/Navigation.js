@@ -9,7 +9,7 @@ import {
 import TwitterIcon from "@mui/icons-material/Twitter";
 import React, { useEffect, useState } from "react";
 
-const Navigation = () => {
+const Navigation = ({ setError }) => {
   const [currentAccount, setCurrentAccount] = useState(null);
 
   useEffect(() => {
@@ -18,16 +18,18 @@ const Navigation = () => {
         .request({ method: "eth_accounts" })
         .then(handleAccountsChanged)
         .catch((err) => {
-          console.error(err);
+          // eslint-disable-next-line no-console
+          // console.error(err);
+          setError(err.message);
+          setCurrentAccount(null);
         });
     }
-  }, [currentAccount]);
-
-  console.log(currentAccount);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleAccountsChanged = (accounts) => {
     if (accounts.length === 0) {
-      window.alert("Please connect to Metamask");
+      setError("Please connect to Metamask");
       setCurrentAccount(null);
     } else if (accounts[0] !== currentAccount) {
       setCurrentAccount(accounts[0]);
@@ -40,19 +42,21 @@ const Navigation = () => {
         .request({ method: "eth_requestAccounts" })
         .then((response) => {
           handleAccountsChanged(response);
-          console.log(response);
+          setError(null);
         })
         .catch((err) => {
           if (err.code === 40001) {
-            window.alert("Please connect to Metamask");
+            setError("Please connect to Metamask");
           } else {
-            window.alert(err);
+            setError(err.message);
+            setCurrentAccount(null);
           }
         });
     } else {
-      window.alert("Your browser does not seem compatible with Ethereum.");
+      setError("Your browser does not seem compatible with Ethereum.");
     }
   };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">

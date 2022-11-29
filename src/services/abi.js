@@ -12,40 +12,6 @@ const abi = [
     stateMutability: "nonpayable",
     type: "function",
   },
-  // {
-  //   inputs: [
-  //     {
-  //       internalType: "uint256",
-  //       name: "_id",
-  //       type: "uint256",
-  //     },
-  //   ],
-  //   name: "getTweet",
-  //   outputs: [
-  //     {
-  //       internalType: "address",
-  //       name: "",
-  //       type: "address",
-  //     },
-  //     {
-  //       internalType: "string",
-  //       name: "",
-  //       type: "string",
-  //     },
-  //     {
-  //       internalType: "uint256",
-  //       name: "",
-  //       type: "uint256",
-  //     },
-  //     {
-  //       internalType: "uint256",
-  //       name: "",
-  //       type: "uint256",
-  //     },
-  //   ],
-  //   stateMutability: "view",
-  //   type: "function",
-  // },
   {
     inputs: [],
     name: "getAllTweets",
@@ -55,14 +21,7 @@ const abi = [
         type: "tuple[]",
         name: "_tweet",
         components: [
-          {
-            type: "tuple",
-            name: "_user",
-            components: [
-              { type: "address", name: "_wallet" },
-              { type: "string", name: "_name" },
-            ],
-          },
+          { internalType: "address", type: "address", name: "_author" },
           { internalType: "uint256", type: "uint256", name: "_id" },
           { internalType: "string", type: "string", name: "_content" },
           { internalType: "uint256", type: "uint256", name: "_timestamp" },
