@@ -1,6 +1,7 @@
 # twitterclone front-end
 
-Front-end repository: https://github.com/sjytis14/twitter-front.git Ethereum repository: https://github.com/cyn63/twitter_solidity.git (One) smart contract deployed address on goerli: `0x489Ac9776D79f25dd24255632f954c87e5261186`
+Front-end repository: https://github.com/sjytis14/twitter-front.git Ethereum repository: https://github.com/cyn63/twitter_solidity.git
+smart contract deployed address on goerli: `0x489Ac9776D79f25dd24255632f954c87e5261186`
 
 This repository aims to be an example of integration of an Ethereum repository using Metamask.
 
