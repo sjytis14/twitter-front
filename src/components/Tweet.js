@@ -18,10 +18,22 @@ import { web3 } from "services/smartContract";
 
 const moment = require("moment");
 
+/**
+ * @dev A function that shows one tweet
+ * @param {author} Tweet author to display
+ * @param {content} Tweet content to display
+ * @param {timestamp} Tweet timestamp to display
+ * @param {id} Tweet ID to display
+ * @param {account} The current user account
+ * @returns A tweet
+ */
 const Tweet = ({ author, content, timestamp, id, account }) => {
   const [editing, setEditing] = useState(false);
   const [newTweet, setNewTweet] = useState(content);
 
+  /**
+   * @dev Delete a tweet
+   */
   const handleDelete = async () => {
     try {
       smartContract.methods.deleteTweet(id).send({ from: account });
@@ -30,6 +42,9 @@ const Tweet = ({ author, content, timestamp, id, account }) => {
     }
   };
 
+  /**
+   * @dev Make sure user wants to delete
+   */
   const onDeleteClick = () => {
     const ok = window.confirm("Are you sure you want to delete this tweet?");
     if (ok) {
@@ -38,10 +53,17 @@ const Tweet = ({ author, content, timestamp, id, account }) => {
     }
   };
 
+  /**
+   * @dev Stores the value whenever an input occurs.
+   * @param {event} onChange event
+   */
   const onChange = (event) => {
     setNewTweet(event.target.value);
   };
 
+  /**
+   * @dev Update a tweet
+   */
   const handleSubmit = async () => {
     const userAccount = await web3.eth.getAccounts();
     smartContract.methods
@@ -52,6 +74,10 @@ const Tweet = ({ author, content, timestamp, id, account }) => {
       });
   };
 
+  /**
+   * @dev Stop edit mode and initialize the textfield when user clicks the submit button
+   * @param {event} onSubmit event
+   */
   const onSubmit = (event) => {
     event.preventDefault();
     handleSubmit(newTweet);
